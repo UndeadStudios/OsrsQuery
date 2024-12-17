@@ -104,7 +104,7 @@ object Dump317 {
             varbits() to DumpInfo(DataType.DAT, "varbit","Varbit"),
             areas() to DumpInfo(DataType.BOTH, "areas","Area"),
             kits() to DumpInfo(DataType.DAT, "idk","Identity Kit"),
-            sequences() to DumpInfo(DataType.DAT, "seq","Sequence"),
+           // sequences() to DumpInfo(DataType.DAT, "seq","Sequence"),
             spotanimations() to DumpInfo(DataType.DAT, "spotanim","Spot Animation"),
             healths() to DumpInfo(DataType.DAT, "healths","Healths Bars"),
             npcs() to DumpInfo(DataType.BOTH, "npc","Npc"),

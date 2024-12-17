@@ -242,30 +242,55 @@ class SequenceProvider(val latch: CountDownLatch?) : Loader, Runnable {
             }
 
             13 -> {
-                val length: Int = buffer.uByte
-                definition.frameSounds = arrayOfNulls(length)
+                if (revisionIsOrAfter(226)) {
+                    definition.skeletalId = buffer.int
+                } else {
+                    val length: Int = buffer.uByte
+                    definition.frameSounds = arrayOfNulls(length)
 
-                for (var4 in 0 until length) {
-                    definition.frameSounds[var4] = Sound.readFrameSound(buffer, revisionIsOrBefore(119))
+                    for (var4 in 0 until length) {
+                        definition.frameSounds[var4] = Sound.readFrameSound(buffer, revisionIsOrBefore(119))
+                    }
                 }
             }
 
-            14 -> definition.skeletalId = buffer.int
+            14 ->  {
+                if (revisionIsOrAfter(226)) {
+                    val size: Int = buffer.uShort
+                    definition.skeletalSounds = emptyMap<Int, Sound>().toMutableMap()
+                    for (index in 0 until size) {
+                        val frame: Int = buffer.uShort
+                        val sound = Sound.readFrameSound(buffer, revisionIsOrBefore(119))
+                        if (sound != null) {
+                            definition.skeletalSounds[frame] = sound
+                        }
+                    }
+                } else {
+                    definition.skeletalId = buffer.int
+                }
+            }
             15 -> {
-                val size: Int = buffer.uShort
-                definition.skeletalSounds = emptyMap<Int, Sound>().toMutableMap()
-                for (index in 0 until size) {
-                    val frame: Int = buffer.uShort
-                    val sound = Sound.readFrameSound(buffer, revisionIsOrBefore(119))
-                    if (sound != null) {
-                        definition.skeletalSounds[frame] = sound
+                if (revisionIsOrAfter(226)) {
+                    definition.skeletalRangeBegin = buffer.short.toInt() and 0xFFFF
+                    definition.skeletalRangeEnd = buffer.short.toInt() and 0xFFFF
+                } else {
+                    val size: Int = buffer.uShort
+                    definition.skeletalSounds = emptyMap<Int, Sound>().toMutableMap()
+                    for (index in 0 until size) {
+                        val frame: Int = buffer.uShort
+                        val sound = Sound.readFrameSound(buffer, revisionIsOrBefore(119))
+                        if (sound != null) {
+                            definition.skeletalSounds[frame] = sound
+                        }
                     }
                 }
             }
 
             16 -> {
-                definition.skeletalRangeBegin = buffer.uShort
-                definition.skeletalRangeEnd = buffer.uShort
+                if (revisionIsOrBefore(225)) {
+                    definition.skeletalRangeBegin = buffer.uShort
+                    definition.skeletalRangeEnd = buffer.uShort
+                }
             }
 
             17 -> {
